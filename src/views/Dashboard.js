@@ -130,27 +130,7 @@ class Dashboard extends Component {
       });
       this.setState({ ftime });
 
-      let idT2 = [];
-      for (let i = 0; i < ftime.length; ) {
-        for (let j = 0; j < 6; j++) {
-          idT2.push(Object.keys(snapshot.val())[j]);
-        }
-      }
-
-      let thirty = [];
-      if (ftime.length - 1 >= 6) {
-        ftime.forEach((thirty) => {
-          db.ref("thirty-time").push(thirty[0]);
-        });
-      }
-
-      if (idT2.length - 1 >= 6) {
-        idT2.forEach((idT2) => {
-          db.ref(`/five-time/${idT2}`).remove();
-        });
-      }
-
-      this.setState({ idT2, thirty });
+      console.log(ftime.length);
     });
   };
 
