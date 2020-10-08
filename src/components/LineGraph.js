@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Chart from "chart.js";
 import "./styles.css";
 
-let myLineChart;
+let chart;
 
 Chart.defaults.global.defaultFontFamily = "'PT Sans', sans-serif";
 Chart.defaults.global.legend.display = false;
@@ -22,9 +22,9 @@ export default class LineGraph extends Component {
     const myChartRef = this.chartRef.current.getContext("2d");
     const { vib, time } = this.props;
 
-    if (typeof myLineChart !== "undefined") myLineChart.destroy();
+    if (typeof chart !== "undefined") chart.destroy();
 
-    myLineChart = new Chart(myChartRef, {
+    chart = new Chart(myChartRef, {
       type: "line",
       data: {
         labels: time,
@@ -38,7 +38,32 @@ export default class LineGraph extends Component {
           },
         ],
       },
-      options: {},
+      options: {
+        responsive: true,
+        legend: {
+          position: "bottom",
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Time",
+              },
+            },
+          ],
+          yAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Vibration",
+              },
+            },
+          ],
+        },
+      },
     });
   };
 
