@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import LineGraph from "../components/LineGraph";
 import { db } from "../config/firebase";
 import "./styles.css";
-import CsvDownload from 'react-json-to-csv';
+import CsvDownload from "react-json-to-csv";
 
 class Dashboard extends Component {
   state = {
     vib: [],
     time: [],
-    csvData: [{vib: [], time: []}]
+    data: [{ vib: [], time: [] }],
   };
 
   componentDidMount() {
@@ -22,9 +22,9 @@ class Dashboard extends Component {
       snapshot.forEach((snap) => {
         vib.push(snap.val());
       });
-      let csv = {...this.state.csvData}
-      csv.vib = vib;
-      this.setState({ vib, csv });
+      let csv = { ...this.state.data };
+      csv[0].vib = vib;
+      this.setState({ vib });
     });
   };
 
@@ -34,17 +34,24 @@ class Dashboard extends Component {
       snapshot.forEach((snap) => {
         time.push(snap.val());
       });
-      let csv = {...this.state.csvData}
-      csv.time = time;
-      this.setState({ time, csv });
+      let csv = { ...this.state.data };
+      csv[0].time = time;
+      this.setState({ time });
     });
   };
 
   render() {
-    const { vib, time, csvData } = this.state;
+    const { vib, time, data } = this.state;
+    console.log(data);
     return (
       <div className="container">
-        <CsvDownload data={csvData} filename="csv_data.csv" class="downloadButton">Download Data</CsvDownload>
+        <CsvDownload
+          data={data}
+          filename="csv_data.csv"
+          className="downloadButton"
+        >
+          Download Data
+        </CsvDownload>
         <h1>Vibration Monitor</h1>
         <LineGraph vib={vib} time={time} />
       </div>
