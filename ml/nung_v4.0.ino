@@ -10,8 +10,8 @@ int sensorValue;
 #define WIFI_SSID "YeeChouIE"
 #define WIFI_PASSWORD "27643996"
 
-//#define FIREBASE_HOST "project-nung.firebaseio.com"
-//#define FIREBASE_AUTH "mj2pw6D57SwHe0gpB8AQNyAliMFMPkbjiQjQQpsz"
+#define FIREBASE_HOST "project-nung.firebaseio.com"
+#define FIREBASE_AUTH "mj2pw6D57SwHe0gpB8AQNyAliMFMPkbjiQjQQpsz"
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
@@ -49,31 +49,39 @@ void setup() {
 
   timeClient.begin();
   timeClient.setTimeOffset(28800);
-  //  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 void loop() {
   long v = getVibration();
   Serial.println(v);
-  //  Firebase.pushInt("vibration", v);
-
+  Firebase.pushInt("vibration", v);
+  
   timeClient.update();
   unsigned long epochTime = timeClient.getEpochTime();
   String timestamp = timeClient.getFormattedTime();
   Serial.println(timestamp);
-
-  //  Firebase.pushString("timestamp", timestamp);
-
-  //  if (Firebase.failed()) {
-  //    Serial.print("pushing failed:");
-  //    Serial.println(Firebase.error());
-  //    return;
-  //  }
-  delay(1000);
+  
+  Firebase.pushString("timestamp", timestamp);
+  
+  if (Firebase.failed()) {
+    Serial.print("pushing failed:");
+    Serial.println(Firebase.error());
+    return;
+  }
+  delay(1800000);
 }
 
 
 long getVibration() {
-  long v = pulseIn(sensorPin, HIGH);
-  return v;
+
+  long vibrations[6];
+  long vibrationsSum = 0.00;
+  for (int i = 0; i <= 5; i++) {
+    vibrations[i] = pulseIn(sensorPin, HIGH);
+    vibrationsSum = vibrationsSum + vibrations[i];
+    delay(300000);
+  }
+  long averageVibrations = vibrationsSum / 6;
+  return averageVibrations;
 }
