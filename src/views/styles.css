@@ -9,3 +9,20 @@
 h1 {
   color: black;
 }
+
+.downloadButton{
+  box-shadow: inset 0px 1px 0px 0px #5B86E5;
+  background: #36D1DC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  border-radius:6px;
+  border: 3px solid #5B86E5;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  padding:"6px 24px";
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #5B86E5;
+}
