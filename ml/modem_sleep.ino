@@ -7,8 +7,8 @@ int sensorValue;
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
-#define WIFI_SSID "YeeChouIE"
-#define WIFI_PASSWORD "27643996"
+#define WIFI_SSID "xxx"
+#define WIFI_PASSWORD "xxx"
 
 #define FIREBASE_HOST "project-nung.firebaseio.com"
 #define FIREBASE_AUTH "mj2pw6D57SwHe0gpB8AQNyAliMFMPkbjiQjQQpsz"
