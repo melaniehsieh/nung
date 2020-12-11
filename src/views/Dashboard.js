@@ -8,7 +8,7 @@ class Dashboard extends Component {
   state = {
     vib: [],
     time: [],
-    data: [{ vib: [], time: [] }],
+    csvData: []
   };
 
   componentDidMount() {
@@ -22,9 +22,9 @@ class Dashboard extends Component {
       snapshot.forEach((snap) => {
         vib.push(snap.val());
       });
-      let csv = { ...this.state.data };
-      csv[0].vib = vib;
-      this.setState({ vib });
+      let csv = this.state.csvData;
+      csv.push({"vib": vib})
+      this.setState({ vib, csv });
     });
   };
 
@@ -34,9 +34,9 @@ class Dashboard extends Component {
       snapshot.forEach((snap) => {
         time.push(snap.val());
       });
-      let csv = { ...this.state.data };
-      csv[0].time = time;
-      this.setState({ time });
+      let csv = this.state.csvData;
+      csv.push({"time": time})
+      this.setState({ time, csv });
     });
   };
 
@@ -45,13 +45,7 @@ class Dashboard extends Component {
     console.log(data);
     return (
       <div className="container">
-        <CsvDownload
-          data={data}
-          filename="csv_data.csv"
-          className="downloadButton"
-        >
-          Download Data
-        </CsvDownload>
+        <CsvDownload data={csvData} filename="csv_data.csv" className="downloadButton">Download Data</CsvDownload>
         <h1>Vibration Monitor</h1>
         <LineGraph vib={vib} time={time} />
       </div>
