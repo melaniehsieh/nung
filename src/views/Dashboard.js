@@ -22,11 +22,32 @@ class Dashboard extends Component {
       snapshot.forEach((snap) => {
         vib.push(snap.val());
       });
-      let csv = this.state.csvData;
-      csv.push({"vib": vib})
-      this.setState({ vib, csv });
+      
+      this.setState({ vib });
+      this.convertData();
     });
   };
+
+  convertData = () => {
+    let amount;
+    let csvData = [];
+    let vib = this.state.vib;
+    let time = this.state.time;
+    vib.length >= time.length ? amount = vib.length : amount = time.length; 
+    for(let i = 0; i < amount; i++){
+      let object = {"vib": "", "time": ""}
+      if(vib[i] != null){
+        object.vib = vib[i];
+      }
+      if(time[i] != null){
+        object.time = time[i];
+      }
+
+      csvData.push(object)
+    }
+
+    this.setState({csvData});
+  }
 
   readTime = () => {
     db.ref("timestamp").on("value", (snapshot) => {
@@ -34,15 +55,16 @@ class Dashboard extends Component {
       snapshot.forEach((snap) => {
         time.push(snap.val());
       });
-      let csv = this.state.csvData;
-      csv.push({"time": time})
-      this.setState({ time, csv });
+
+      this.setState({ time });
+      this.convertData();
     });
   };
 
+
   render() {
-    const { vib, time, data } = this.state;
-    console.log(data);
+    const { vib, time, csvData } = this.state;
+    console.log(csvData);
     return (
       <div className="container">
         <CsvDownload data={csvData} filename="csv_data.csv" className="downloadButton">Download Data</CsvDownload>
