@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import LineGraph from "../components/LineGraph";
 import { db } from "../config/firebase";
 import "./styles.css";
-import CsvDownload from 'react-json-to-csv';
+import CsvDownload from "react-json-to-csv";
 
 class Dashboard extends Component {
   state = {
@@ -64,6 +64,7 @@ class Dashboard extends Component {
 
   render() {
     const { vib, time, csvData } = this.state;
+    console.log(csvData);
     return (
       <div className="container">
         <CsvDownload data={csvData} filename="csv_data.csv" className="downloadButton">Download Data</CsvDownload>

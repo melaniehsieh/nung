@@ -7,8 +7,8 @@ int sensorValue;
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
-#define WIFI_SSID "xxx"
-#define WIFI_PASSWORD "xxx"
+#define WIFI_SSID "YeeChouIE"
+#define WIFI_PASSWORD "27643996"
 
 #define FIREBASE_HOST "project-nung.firebaseio.com"
 #define FIREBASE_AUTH "mj2pw6D57SwHe0gpB8AQNyAliMFMPkbjiQjQQpsz"
@@ -54,48 +54,32 @@ void setup() {
 
 void loop() {
   long v = getVibration();
-  Serial.println(v);
   Firebase.pushInt("vibration", v);
-<<<<<<< HEAD:ml/nung_v4.0.ino
-  
-=======
 
->>>>>>> 82cde970cd865a0c1ae96987862b1425463a1997:ml/modem_sleep.ino
   timeClient.update();
   unsigned long epochTime = timeClient.getEpochTime();
   String timestamp = timeClient.getFormattedTime();
-  Serial.println(timestamp);
-<<<<<<< HEAD:ml/nung_v4.0.ino
-  
-  Firebase.pushString("timestamp", timestamp);
-  
-=======
 
   Firebase.pushString("timestamp", timestamp);
 
->>>>>>> 82cde970cd865a0c1ae96987862b1425463a1997:ml/modem_sleep.ino
   if (Firebase.failed()) {
     Serial.print("pushing failed:");
     Serial.println(Firebase.error());
     return;
   }
-<<<<<<< HEAD:ml/nung_v4.0.ino
   delay(1800000);
-=======
-  delay(1000);
->>>>>>> 82cde970cd865a0c1ae96987862b1425463a1997:ml/modem_sleep.ino
 }
 
 
 long getVibration() {
 
-  long vibrations[6];
-  long vibrationsSum = 0.00;
+  long vib[6];
+  long vibSum = 0.00;
   for (int i = 0; i <= 5; i++) {
-    vibrations[i] = pulseIn(sensorPin, HIGH);
-    vibrationsSum = vibrationsSum + vibrations[i];
+    vib[i] = pulseIn(sensorPin, HIGH);
+    vibSum = vibSum + vib[i];
     delay(300000);
   }
-  long averageVibrations = vibrationsSum / 6;
-  return averageVibrations;
+  long avgVib = vibSum / 6;
+  return avgVib;
 }
