@@ -70,16 +70,16 @@ void loop() {
   delay(1800000);
 }
 
-
 long getVibration() {
-
-  long vib[6];
   long vibSum = 0.00;
+  long vib = 0.00;
   for (int i = 0; i <= 5; i++) {
-    vib[i] = pulseIn(sensorPin, HIGH);
-    vibSum = vibSum + vib[i];
+    vib = pulseIn(sensorPin, HIGH);
+    vibSum = vibSum + vib;
     delay(300000);
   }
   long avgVib = vibSum / 6;
+  Serial.println(avgVib);
+
   return avgVib;
 }
