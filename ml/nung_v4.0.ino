@@ -16,6 +16,9 @@ int sensorValue;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
+unsigned long previousMillis = 0;
+const long interval = 1800000;
+
 void setup() {
   Serial.begin(115200);
   delay(10);
@@ -53,32 +56,56 @@ void setup() {
 }
 
 void loop() {
-  long v = getVibration();
-  Firebase.pushInt("vibration", v);
+  long v = 0;
+  unsigned long currentMillis = millis();
 
-  timeClient.update();
-  unsigned long epochTime = timeClient.getEpochTime();
-  String timestamp = timeClient.getFormattedTime();
+  while (1) {
+    previousMillis = currentMillis;
+    v = getVibration();
 
-  Firebase.pushString("timestamp", timestamp);
+    timeClient.update();
+    unsigned long epochTime = timeClient.getEpochTime();
+    String t = timeClient.getFormattedTime();
 
-  if (Firebase.failed()) {
-    Serial.print("pushing failed:");
-    Serial.println(Firebase.error());
-    return;
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+    root["timestamp"] = t;
+    root["vibration"] = v;
+
+    String data = Firebase.push("/data", root);
+    if (Firebase.failed()) {
+      Serial.print("Failed to push data to Firebase");
+      Serial.println(Firebase.error());
+      return;
+    }
+    else {
+      Serial.print("Successfully pushed data to Firebase");
+      Serial.println(data);
+    }
   }
-  delay(1800000);
 }
 
 long getVibration() {
-  long vibSum = 0.00;
-  long vib = 0.00;
-  for (int i = 0; i <= 5; i++) {
+  long vibSum = 0;
+  long vib = 0;
+  long avgVib = 0;
+  int N = 6;
+  int readings[N];
+
+  for (int i = 0; i < 30; i++) {
     vib = pulseIn(sensorPin, HIGH);
-    vibSum = vibSum + vib;
+    readings[i] = vib;
     delay(300000);
   }
-  long avgVib = vibSum / 6;
+
+  for (int j = 0; j < N; j++) {
+    vibSum = vibSum + readings[j];
+    Serial.println(readings[j]);
+  }
+
+  Serial.println("vibSum: ");
+  Serial.println(vibSum);
+  avgVib = vibSum / N;
   Serial.println(avgVib);
 
   return avgVib;
