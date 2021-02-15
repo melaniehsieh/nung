@@ -8,68 +8,62 @@ class Dashboard extends Component {
   state = {
     vib: [],
     time: [],
-    csvData: []
+    csvData: [],
   };
 
   componentDidMount() {
-    this.readVibration();
-    this.readTime();
-  }
-
-  readVibration = () => {
-    db.ref("vibration").on("value", (snapshot) => {
+    db.ref("data").on("value", (snapshot) => {
+      let data = [];
       let vib = [];
+      let time = [];
       snapshot.forEach((snap) => {
-        vib.push(snap.val());
+        data.push(snap.val());
       });
-      
-      this.setState({ vib });
+
+      for (let i = 0; i < data.length; i++) {
+        vib.push(data[i].vibration);
+        time.push(data[i].timestamp);
+      }
+
+      this.setState({ vib, time });
       this.convertData();
     });
-  };
+  }
 
   convertData = () => {
     let amount;
     let csvData = [];
     let vib = this.state.vib;
     let time = this.state.time;
-    vib.length >= time.length ? amount = vib.length : amount = time.length; 
-    for(let i = 0; i < amount; i++){
-      let object = {"vib": "", "time": ""}
-      if(vib[i] != null){
+    vib.length >= time.length ? (amount = vib.length) : (amount = time.length);
+    for (let i = 0; i < amount; i++) {
+      let object = { vib: "", time: "" };
+      if (vib[i] != null) {
         object.vib = vib[i];
       }
-      if(time[i] != null){
+      if (time[i] != null) {
         object.time = time[i];
       }
 
-      csvData.push(object)
+      csvData.push(object);
     }
 
-    this.setState({csvData});
-  }
-
-  readTime = () => {
-    db.ref("timestamp").on("value", (snapshot) => {
-      let time = [];
-      snapshot.forEach((snap) => {
-        time.push(snap.val());
-      });
-
-      this.setState({ time });
-      this.convertData();
-    });
+    this.setState({ csvData });
   };
-
 
   render() {
     const { vib, time, csvData } = this.state;
-    console.log(csvData);
     return (
       <div className="container">
-        <CsvDownload data={csvData} filename="csv_data.csv" className="downloadButton">Download Data</CsvDownload>
         <h1>Vibration Monitor</h1>
         <LineGraph vib={vib} time={time} />
+        <CsvDownload
+          data={csvData}
+          filename="data.csv"
+          className="downloadButton"
+        >
+          Download Data
+        </CsvDownload>
       </div>
     );
   }
