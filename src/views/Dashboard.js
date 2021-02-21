@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import LineGraph from "../components/LineGraph";
 import { db } from "../config/firebase";
 import "./styles.css";
-import CsvDownload from "react-json-to-csv";
 
 class Dashboard extends Component {
   state = {
@@ -12,7 +11,7 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    db.ref("data").on("value", (snapshot) => {
+    db.ref("pang").on("value", (snapshot) => {
       let data = [];
       let vib = [];
       let time = [];
@@ -26,44 +25,15 @@ class Dashboard extends Component {
       }
 
       this.setState({ vib, time });
-      this.convertData();
     });
   }
 
-  convertData = () => {
-    let amount;
-    let csvData = [];
-    let vib = this.state.vib;
-    let time = this.state.time;
-    vib.length >= time.length ? (amount = vib.length) : (amount = time.length);
-    for (let i = 0; i < amount; i++) {
-      let object = { vib: "", time: "" };
-      if (vib[i] != null) {
-        object.vib = vib[i];
-      }
-      if (time[i] != null) {
-        object.time = time[i];
-      }
-
-      csvData.push(object);
-    }
-
-    this.setState({ csvData });
-  };
-
   render() {
-    const { vib, time, csvData } = this.state;
+    const { vib, time } = this.state;
     return (
       <div className="container">
         <h1>Vibration Monitor</h1>
         <LineGraph vib={vib} time={time} />
-        <CsvDownload
-          data={csvData}
-          filename="data.csv"
-          className="downloadButton"
-        >
-          Download Data
-        </CsvDownload>
       </div>
     );
   }
